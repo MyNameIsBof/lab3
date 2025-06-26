@@ -23,6 +23,9 @@ function MyNavbar() {
             <Nav.Link as={Link} to="/management">
               Management
             </Nav.Link>
+            <Nav.Link as={Link} to="/codeant">
+              🤖 CodeAnt AI
+            </Nav.Link>
             
           </Nav>
         </Navbar.Collapse>
