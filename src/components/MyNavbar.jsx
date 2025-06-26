@@ -26,6 +26,9 @@ function MyNavbar() {
             <Nav.Link as={Link} to="/codeant">
               🤖 CodeAnt AI
             </Nav.Link>
+            <Nav.Link as={Link} to="/codeant-demo">
+              🔬 Demo Comparison
+            </Nav.Link>
             
           </Nav>
         </Navbar.Collapse>

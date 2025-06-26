@@ -55,6 +55,12 @@ class CodeAntCLI {
         case 'analyze':
           await this.analyzeCode(options);
           break;
+        case 'test':
+          await this.runTestCases(options);
+          break;
+        case 'demo':
+          await this.runDemo(options);
+          break;
         case 'report':
           await this.generateReport(options);
           break;
@@ -347,6 +353,9 @@ COMMANDS:
                           Types: dependencies, vulnerabilities, secrets
   analyze [--type <type>]  Analyze code quality
                           Types: quality, performance, maintainability, accessibility
+  test [--category <cat>]  Run test cases to demonstrate vulnerabilities
+                          Categories: security, performance, quality, accessibility
+  demo [--interactive]     Run interactive demonstration
   report [--format json]   Generate comprehensive report
   config                   Show current configuration
   help                     Show this help message
@@ -356,16 +365,226 @@ EXAMPLES:
   node codeant-demo.js connect --repo github.com/MyNameIsBof/lab3
   node codeant-demo.js scan --type vulnerabilities
   node codeant-demo.js analyze --type performance
+  node codeant-demo.js test --category security --fix
+  node codeant-demo.js demo --interactive
   node codeant-demo.js report --format json
+
+TEST SCENARIOS:
+  npm run codeant:test-security    # Test security vulnerabilities
+  npm run codeant:test-performance # Test performance issues
+  npm run codeant:test-quality     # Test code quality
+  npm run codeant:demo             # Run interactive demo
 
 OPTIONS:
   --repo <url>            Repository URL
   --type <type>           Analysis type
+  --category <category>   Test category
   --format <format>       Output format (json)
   --fix                   Auto-fix issues where possible
+  --interactive           Enable interactive mode
 
 For more information, visit: https://codeant.ai
     `);
+  }
+
+  // Run test cases to demonstrate CodeAnt AI capabilities
+  async runTestCases(options) {
+    console.log('🧪 Running CodeAnt AI Test Cases...\n');
+
+    if (!this.isProjectConnected()) {
+      throw new Error('Repository not connected. Run "connect" first.');
+    }
+
+    const testCategories = options.category ? [options.category] : [
+      'security',
+      'performance', 
+      'quality',
+      'accessibility'
+    ];
+
+    const testResults = {
+      total: 0,
+      passed: 0,
+      failed: 0,
+      issues: []
+    };
+
+    for (const category of testCategories) {
+      console.log(`🔍 Testing ${category} vulnerabilities...`);
+      await this.delay(1500);
+      
+      const categoryResults = await this.runCategoryTests(category);
+      testResults.total += categoryResults.total;
+      testResults.passed += categoryResults.passed;
+      testResults.failed += categoryResults.failed;
+      testResults.issues.push(...categoryResults.issues);
+      
+      console.log(`  📊 ${category}: ${categoryResults.passed}/${categoryResults.total} tests passed\n`);
+    }
+
+    console.log('📋 Test Results Summary:');
+    console.log('─'.repeat(40));
+    console.log(`Total Tests: ${testResults.total}`);
+    console.log(`✅ Passed: ${testResults.passed}`);
+    console.log(`❌ Failed: ${testResults.failed}`);
+    console.log(`🔍 Issues Found: ${testResults.issues.length}\n`);
+
+    if (testResults.issues.length > 0) {
+      console.log('🚨 Critical Issues Detected:');
+      testResults.issues.slice(0, 5).forEach((issue, index) => {
+        console.log(`${index + 1}. ${issue.severity} - ${issue.title}`);
+        console.log(`   📁 ${issue.file}:${issue.line}`);
+        console.log(`   💡 ${issue.solution}\n`);
+      });
+    }
+
+    if (options.fix) {
+      console.log('🔧 Auto-fixing critical issues...');
+      await this.delay(3000);
+      console.log('✅ Fixed 8/10 issues automatically');
+      console.log('⚠️ 2 issues require manual intervention');
+    }
+  }
+
+  async runCategoryTests(category) {
+    const results = {
+      total: 0,
+      passed: 0,
+      failed: 0,
+      issues: []
+    };
+
+    switch (category) {
+      case 'security':
+        results.total = 15;
+        results.failed = 8;
+        results.passed = 7;
+        results.issues = [
+          {
+            severity: 'High',
+            title: 'SQL Injection Vulnerability',
+            file: 'src/components/demo/VulnerableTestCases.js',
+            line: 4,
+            solution: 'Use parameterized queries'
+          },
+          {
+            severity: 'High', 
+            title: 'XSS Vulnerability',
+            file: 'src/components/demo/VulnerableTestCases.js',
+            line: 10,
+            solution: 'Sanitize user input with DOMPurify'
+          },
+          {
+            severity: 'Critical',
+            title: 'Hardcoded API Keys',
+            file: 'src/components/demo/VulnerableTestCases.js',
+            line: 20,
+            solution: 'Move secrets to environment variables'
+          }
+        ];
+        break;
+        
+      case 'performance':
+        results.total = 8;
+        results.failed = 3;
+        results.passed = 5;
+        results.issues = [
+          {
+            severity: 'Medium',
+            title: 'Memory Leak in useEffect',
+            file: 'src/components/demo/ProblematicComponent.jsx',
+            line: 20,
+            solution: 'Add cleanup function to useEffect'
+          }
+        ];
+        break;
+        
+      case 'quality':
+        results.total = 12;
+        results.failed = 7;
+        results.passed = 5;
+        results.issues = [
+          {
+            severity: 'Low',
+            title: 'Missing PropTypes validation',
+            file: 'src/components/demo/ProblematicComponent.jsx',
+            line: 10,
+            solution: 'Add PropTypes for component props'
+          }
+        ];
+        break;
+        
+      case 'accessibility':
+        results.total = 6;
+        results.failed = 2;
+        results.passed = 4;
+        results.issues = [
+          {
+            severity: 'Medium',
+            title: 'Missing ARIA labels',
+            file: 'src/components/demo/ProblematicComponent.jsx',
+            line: 85,
+            solution: 'Add proper ARIA labels and semantic HTML'
+          }
+        ];
+        break;
+    }
+
+    return results;
+  }
+
+  // Run interactive demo
+  async runDemo(options) {
+    console.log('🎬 CodeAnt AI Interactive Demo\n');
+    
+    console.log('🚀 Welcome to CodeAnt AI - Intelligent Code Analysis');
+    console.log('This demo shows how CodeAnt AI helps improve your code\n');
+    
+    await this.delay(2000);
+    
+    console.log('📁 Analyzing project structure...');
+    await this.delay(1500);
+    console.log('  ✅ React application detected');
+    console.log('  ✅ TypeScript/JavaScript files found');
+    console.log('  ✅ Package.json configuration loaded\n');
+    
+    console.log('🔍 Running comprehensive analysis...');
+    await this.delay(2000);
+    
+    console.log('🛡️ Security Analysis:');
+    await this.delay(1000);
+    console.log('  ❌ Found 8 security vulnerabilities');
+    console.log('  ⚠️ 3 High, 3 Medium, 2 Low severity');
+    console.log('  🔧 All issues have automated fixes available\n');
+    
+    console.log('📊 Code Quality Analysis:');
+    await this.delay(1000);
+    console.log('  📈 Quality Score: 6.8/10');
+    console.log('  🔄 Cyclomatic Complexity: 4.2 (Moderate)');
+    console.log('  🧪 Test Coverage: 65%');
+    console.log('  📝 Documentation: 40%\n');
+    
+    console.log('⚡ Performance Analysis:');
+    await this.delay(1000);
+    console.log('  🚀 Bundle Size: 245KB');
+    console.log('  ⏱️ Load Time: 2.3s');
+    console.log('  💾 Memory Usage: 45MB');
+    console.log('  🎯 5 optimization opportunities found\n');
+    
+    console.log('🤖 AI Recommendations:');
+    await this.delay(1000);
+    console.log('  1. Implement code splitting to reduce bundle size');
+    console.log('  2. Add PropTypes for better type safety');
+    console.log('  3. Use React.memo for expensive components');
+    console.log('  4. Add error boundaries for better error handling');
+    console.log('  5. Implement lazy loading for images\n');
+    
+    if (options.interactive) {
+      console.log('🔧 Would you like to auto-fix these issues? (y/n)');
+      console.log('📋 Type "npm run codeant:test --fix" to apply fixes');
+    }
+    
+    console.log('✨ Demo completed! Your code is now 40% more secure and performant.');
   }
 
   delay(ms) {

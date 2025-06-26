@@ -13,7 +13,14 @@
     "codeant:connect": "node codeant-demo.js connect",
     "codeant:scan": "node codeant-demo.js scan",
     "codeant:analyze": "node codeant-demo.js analyze",
-    "codeant:report": "node codeant-demo.js report"
+    "codeant:test": "node codeant-demo.js test",
+    "codeant:test-security": "node codeant-demo.js test --category security",
+    "codeant:test-performance": "node codeant-demo.js test --category performance",
+    "codeant:test-quality": "node codeant-demo.js test --category quality",
+    "codeant:demo": "node codeant-demo.js demo",
+    "codeant:demo-interactive": "node codeant-demo.js demo --interactive",
+    "codeant:report": "node codeant-demo.js report",
+    "codeant:fix": "node codeant-demo.js test --fix"
   },
   "dependencies": {
     "axios": "^1.10.0",
